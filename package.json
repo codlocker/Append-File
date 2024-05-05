@@ -14,7 +14,7 @@
     "@types/react-bootstrap": "^0.32.36",
     "@types/react-dom": "^18.3.0",
     "amazon-cognito-identity-js": "^6.3.12",
-    "aws-sdk": "^2.1608.0",
+    "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "nanoid": "^5.0.7",
     "react": "^18.3.1",

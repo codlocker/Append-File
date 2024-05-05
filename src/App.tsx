@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { nanoid } from "nanoid";
 import { S3_file_params } from "./types/S3_file_params";
-import { handlePreSignedUrl } from "./utils/S3_utils";
+import { handlePreSignedUrl, putFile } from "./utils/S3_utils";
 import { getErrorMessage } from "./utils/utilities";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -41,6 +41,13 @@ function App() {
       seterrorMessage('file input should not be empty');
       return;
     }
+    
+    console.log(file);
+
+    if (file.type !== "text/plain") {
+      seterrorMessage('File type should be of txt.');
+      return;
+    }
 
     // Prepare parameters to upload to S3 and DynamoDB.
     const id = nanoid();
@@ -56,10 +63,15 @@ function App() {
       const upload_url = await handlePreSignedUrl(
         s3_params
       );
-      
-      console.log(upload_url);
+      setUploadStatus(`Upload Url obtained. Uploading...`);
 
-      setUploadStatus(upload_url);
+      const uploadResponse = await putFile(upload_url, file);
+
+      if (uploadResponse.status === 200) {
+        setUploadStatus('Upload Succeeded');
+      } else {
+        setUploadStatus('Upload Failed');
+      }
     } catch (error) {
       setUploadStatus(getErrorMessage(error) || '');
     }
