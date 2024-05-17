@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
-import { Form, Button, Card, Alert } from "react-bootstrap";
+import { Card, Alert, Navbar, Container, Nav, Button } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
 import { nanoid } from "nanoid";
 import { S3_file_params } from "./types/S3_file_params";
 import { handlePreSignedUrl, putFile } from "./utils/S3_utils";
 import { getErrorMessage } from "./utils/utilities";
-
+import { authenticate, logOut } from "./auth/authenticate";
+import AuthModal from './components/modals/authModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import { useAppDispatch } from './types/hooks';
+import { openModal, closeModal } from './store/auth-slice';
 
 function App() {
   const [errorMessage, seterrorMessage] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>('');
+  const [loginStatus, setLoginStatus] = useState<boolean>(false);
+  
+  const dispatch = useAppDispatch();
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
@@ -41,7 +49,7 @@ function App() {
       seterrorMessage('file input should not be empty');
       return;
     }
-    
+
     console.log(file);
 
     if (file.type !== "text/plain") {
@@ -77,32 +85,63 @@ function App() {
     }
   }
 
+  const toggleAuth = () => {
+    dispatch(openModal());
+  }
+
   return (
-    <div className="App p-5">
-      {errorMessage.length > 0 && <Alert variant='danger'>{errorMessage}</Alert>}
+    <>
+      <Navbar expand="lg" bg="primary" data-bs-theme="dark">
+        <Container>
+          <Navbar.Brand href="#home">Brand</Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Collapse className="justify-content-end">
+            <Nav>
+              {!loginStatus
+               && 
+               <Nav.Link>
+                <Button variant="warning" onClick={toggleAuth}>
+                  Login / SignUp
+                </Button>
+              </Nav.Link>}
 
-      <Card style={{ width: '25rem' }}>
-        <Card.Body>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group>
-              <Form.Label>Text Input:</Form.Label>
-              <Form.Control type='text' placeholder='text input' onChange={handleTextChange}></Form.Control>
-            </Form.Group>
+              {loginStatus && <Nav.Link>
+                  <Button variant="warning">
+                    Logout
+                  </Button>
+                </Nav.Link>}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <div className="App p-5">
+        {errorMessage.length > 0 && <Alert variant='danger'>{errorMessage}</Alert>}
 
-            <Form.Group>
-              <Form.Label>File Input:</Form.Label>
-              <Form.Control type='file' placeholder='select file' onChange={handleFileChange}></Form.Control>
-            </Form.Group>
-            <br />
-            <Button variant='primary' type='submit'>
-              Submit
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
+        <Card style={{ width: '25rem' }}>
+          <Card.Body>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group>
+                <Form.Label>Text Input:</Form.Label>
+                <Form.Control type='text' placeholder='text input' onChange={handleTextChange}></Form.Control>
+              </Form.Group>
 
-      {uploadStatus.length > 0 && <Alert variant='primary'>{uploadStatus}</Alert>}
-    </div>
+              <Form.Group>
+                <Form.Label>File Input:</Form.Label>
+                <Form.Control type='file' placeholder='select file' onChange={handleFileChange}></Form.Control>
+              </Form.Group>
+              <br />
+              <Button variant='primary' type='submit'>
+                Submit
+              </Button>
+            </Form>
+          </Card.Body>
+        </Card>
+
+        {uploadStatus.length > 0 && <Alert variant='primary'>{uploadStatus}</Alert>}
+      </div>
+
+      < AuthModal />
+    </>
   );
 }
 
