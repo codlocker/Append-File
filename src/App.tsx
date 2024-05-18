@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
 import { Card, Alert, Navbar, Container, Nav, Button } from "react-bootstrap";
-import Modal from "react-bootstrap/Modal";
+import { RootState } from "./store";
 import Form from "react-bootstrap/Form";
 import { nanoid } from "nanoid";
 import { S3_file_params } from "./types/S3_file_params";
 import { handlePreSignedUrl, putFile } from "./utils/S3_utils";
 import { getErrorMessage } from "./utils/utilities";
-import { authenticate, logOut } from "./auth/authenticate";
+import { logOut } from "./auth/authenticate";
 import AuthModal from './components/modals/authModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { useAppDispatch } from './types/hooks';
-import { openModal, closeModal } from './store/auth-slice';
+import { useAppDispatch, useAppSelector } from './types/hooks';
+import { clearStates, openModal } from './store/auth-slice';
 
 function App() {
   const [errorMessage, seterrorMessage] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>('');
-  const [loginStatus, setLoginStatus] = useState<boolean>(false);
-  
+
   const dispatch = useAppDispatch();
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +84,12 @@ function App() {
     }
   }
 
+  const handleLogout = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    logOut();
+    dispatch(clearStates());
+  }
+
   const toggleAuth = () => {
     dispatch(openModal());
   }
@@ -97,19 +102,19 @@ function App() {
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             <Nav>
-              {!loginStatus
-               && 
-               <Nav.Link>
-                <Button variant="warning" onClick={toggleAuth}>
-                  Login / SignUp
-                </Button>
-              </Nav.Link>}
-
-              {loginStatus && <Nav.Link>
-                  <Button variant="warning">
-                    Logout
+              {useAppSelector((state: RootState) => state.auth.accessToken.length == 0)
+                &&
+                <Nav.Link>
+                  <Button variant="warning" onClick={toggleAuth}>
+                    Login / SignUp
                   </Button>
                 </Nav.Link>}
+
+              {useAppSelector((state: RootState) => state.auth.accessToken.length > 0) && <Nav.Link>
+                <Button variant="warning" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </Nav.Link>}
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import { AuthParams } from "../types/authInput";
 
 const initiaState: AuthParams = {
-    isLoginModal: false
+    isLoginModal: false,
+    accessToken: '',
+    email: ''
 };
 
 const authSlice = createSlice({
@@ -14,10 +16,15 @@ const authSlice = createSlice({
         },
         closeModal: (state) => {
             state.isLoginModal = false;
-        }
+        },
+        setAccessToken: (state, payload) => {
+            state.accessToken = payload.payload?.accessToken
+            state.email = payload.payload?.email
+        },
+        clearStates: () => initiaState
     }
 });
 
-export const {openModal, closeModal } = authSlice.actions;
+export const { openModal, closeModal, setAccessToken, clearStates } = authSlice.actions;
 
 export default authSlice;
