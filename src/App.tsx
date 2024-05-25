@@ -8,6 +8,7 @@ import { handlePreSignedUrl, putFile } from "./utils/S3_utils";
 import { getErrorMessage } from "./utils/utilities";
 import { logOut } from "./auth/authenticate";
 import AuthModal from './components/modals/authModal';
+import DbContainer from "./components/tables/dbContainer";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './types/hooks';
@@ -143,8 +144,10 @@ function App() {
         </Card>
 
         {uploadStatus.length > 0 && <Alert variant='primary'>{uploadStatus}</Alert>}
-      </div>
 
+        { useAppSelector((state: RootState) => state.auth.email.length > 0) && <DbContainer />}
+      </div>
+        
       < AuthModal />
     </>
   );

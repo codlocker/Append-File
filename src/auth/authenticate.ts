@@ -4,7 +4,6 @@ import {
     CognitoUserSession,
     CognitoUserAttribute
 } from "amazon-cognito-identity-js";
-
 import { TokenResponse } from "./../types/accessTokenResponse";
 import userpool from "../userpool";
 import { ApiResponse } from "../types/ApiResponse";
@@ -12,7 +11,7 @@ import { ApiResponse } from "../types/ApiResponse";
 export const authenticate = async (email: string, password: string): Promise<TokenResponse> => {
     const cognitoUser = new CognitoUser({
         Username: email,
-        Pool: userpool
+        Pool: userpool,
     });
 
     const authDetails = new AuthenticationDetails({
@@ -37,11 +36,14 @@ export const authenticate = async (email: string, password: string): Promise<Tok
                 onSuccess: (result: CognitoUserSession) => {
                     console.log('login successful');
                     const accessToken: string = result.getAccessToken().getJwtToken();
+                    const idtoken: string = result.getIdToken().getJwtToken();
+                    const refreshToken: string = result.getRefreshToken().getToken();
 
                     resolve(response = {
                         status: true,
                         message: 'Login succesful',
                         accessToken: accessToken,
+                        idToken: idtoken,
                         error: null
                     });
                 },

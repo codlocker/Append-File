@@ -1,5 +1,6 @@
 export interface AuthParams {
     isLoginModal: boolean,
-    accessToken: string
-    email: string
+    accessToken: string,
+    email: string,
+    idToken: string
 }

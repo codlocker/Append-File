@@ -4,7 +4,8 @@ import { AuthParams } from "../types/authInput";
 const initiaState: AuthParams = {
     isLoginModal: false,
     accessToken: '',
-    email: ''
+    email: '',
+    idToken: ''
 };
 
 const authSlice = createSlice({
@@ -20,6 +21,7 @@ const authSlice = createSlice({
         setAccessToken: (state, payload) => {
             state.accessToken = payload.payload?.accessToken
             state.email = payload.payload?.email
+            state.idToken = payload.payload?.idToken
         },
         clearStates: () => initiaState
     }

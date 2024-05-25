@@ -50,7 +50,8 @@ const AuthModal = () => {
         setSuccess(res.message);
         dispatch(setAccessToken({
           accessToken: res.accessToken,
-          email: email
+          email: email,
+          idToken: res.idToken
         }));
 
         dispatch(closeModal());
