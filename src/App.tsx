@@ -148,7 +148,7 @@ function App() {
         { useAppSelector((state: RootState) => state.auth.email.length > 0) && <DbContainer />}
       </div>
         
-      < AuthModal />
+      <AuthModal />
     </>
   );
 }
