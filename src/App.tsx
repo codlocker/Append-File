@@ -99,7 +99,9 @@ function App() {
     <>
       <Navbar expand="lg" bg="primary" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="#home">Brand</Navbar.Brand>
+          <Navbar.Brand href="#home">
+            <img src='logo192.png' alt='Image contents' style={{ width: '50px', height: '50px' }}></img>
+          </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             <Nav>
