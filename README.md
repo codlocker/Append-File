@@ -19,6 +19,9 @@
   - **REACT_APP_AWS_S3_BUCKET** - S3 bucket name
   - **REACT_APP_IDENTITY_POOL_ID** - ID pool Id
 
+- Create a lambda function
+  - use the python function to upload to [lambda](./lambda_function.py)
+
 ### Executing the project
 
 - Run `npm install` to install all required packages
